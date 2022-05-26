@@ -6,6 +6,7 @@ create table Persona
   Nombre varchar(30) not NULL,
   Direccion varchar(30) not NULL,
   Telefono integer NULL
+  );
    -- ALTER TABLE Persona ADD Mail VARCHAR(50);                    /*adicionar*/
                      /*modificar*/
 --  ALTER TABLE Persona DROP Mail;                                /*borrar*/  
