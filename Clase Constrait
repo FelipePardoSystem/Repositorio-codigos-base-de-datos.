@@ -1,0 +1,35 @@
+create table Persona
+(
+  id_persona integer not NULL,
+  Rut integer NOT NULL,
+  Dv char(1) NOT NULL,
+  Nombre varchar(30) not NULL,
+  Direccion varchar(30) not NULL,
+  Telefono integer NULL
+   -- ALTER TABLE Persona ADD Mail VARCHAR(50);                    /*adicionar*/
+                     /*modificar*/
+--  ALTER TABLE Persona DROP Mail;                                /*borrar*/  
+  
+  INSERT INTO Persona 
+  (id_persona,rut,dv,nombre,direccion,telefono)
+  VALUES
+  (1,13445667,'k','Juan','Alonso Ovalle',56231548);
+  
+  SELECT*FROM Persona 
+  
+ -- drop TABLE Persona 
+ 
+ 
+  INSERT INTO Persona 
+  (id_persona,rut,dv,nombre,direccion,telefono)
+  VALUES
+  (1,13445667,'2','Hola','Alonso Ovalle',56231548);
+  
+  
+  SELECT MAX(id_persona) FROM persona;-- Valor Maximo
+  union ALL----------------------------- Selecionar todo
+  SELECT min(id_persona) FROM persona;-- Valor Minimo 
+  UNION ALL
+  SELECT avg(id_persona) FROM persona;-- Valor Promedio 
+  SELECT COUNT(id_persona) FROM persona; --Cantidad Registros
+  SELECT SUM(id_persona) from persona; --Sumatoria de registros
