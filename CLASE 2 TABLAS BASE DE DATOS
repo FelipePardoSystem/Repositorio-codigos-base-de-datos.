@@ -1,0 +1,44 @@
+reate table Empleado
+(id_empleado NUMBER (5) not null,
+numrut NUMBER (10) not null,
+dvrut VARCHAR2 (1) not null,
+primer_nombre VARCHAR2 (20) not null ,
+snombre VARCHAR2 (20) null,
+appaterno VARCHAR2 (20) not null,
+apmaterno VARCHAR2 (20) not null,
+fecha_contrato DATE not null,
+tipo_empleado NUMBER (2) not null
+);
+INSERT INTO Empleado 
+  (id_empleado,numrut,dvrut,primer_nombre,snombre,appaterno,apmaterno,fecha_contrato,tipo_empleado)
+  VALUES
+  (3,4444444,4,'FRANCISCO','ALEANDRO','AGUILAR','TAPIA','01/06/11' ,3);
+
+SELECT * FROM Empleado;
+
+DELETE FROM Empleado WHERE id_empleado=3;
+
+
+
+INSERT INTO VENTAS
+(nro_boleta,id_empleado,fecha_boleta,monto_total)
+VALUES
+(100,1,'01/03/2014',200000);
+
+
+
+CREATE table VENTAS
+(nro_boleta NUMBER(8) not null,
+id_empleado NUMBER(5) not null,
+fecha_boleta DATE  not null,
+monto_total NUMBER (8) not null
+)
+create table TIPO_EMPLEADO
+(tipo_empleado NUMBER (2) not null,
+desc_tipo_empleado VARCHAR2 (25) not null
+);
+
+create table COMISION_VENTAS
+(nro_boleta NUMBER(8)not null,
+monto_comision NUMBER(8)
+)
