@@ -1,0 +1,75 @@
+create table empleado
+(id_empleado number(5) not NULL,
+numrut number(10) not null,
+dvrut varchar2(1) not null,
+primer_nombre VARCHAR(20)not null,
+snombre VARCHAR2(20) null,
+appaterno VARCHAR2(20) not null,
+apmaterno VARCHAR2(20) not null,
+fecha_contrato date not null,
+tipo_empleado number(2) not null);
+
+insert into empleado(id_empleado,numrut,dvrut,primer_nombre,appaterno,apmaterno,fecha_contrato,tipo_empleado) 
+values(4,5555555,5,'maria','romero','rojas','01/08/12',1);
+insert into empleado(id_empleado,numrut,dvrut,primer_nombre,snombre,appaterno,apmaterno,fecha_contrato,tipo_empleado)
+values(5,6666666,6,'sonia','eugenia','tapia','vega','01/08/12',2);
+insert into empleado(id_empleado,numrut,dvrut,primer_nombre,appaterno,apmaterno,fecha_contrato,tipo_empleado)
+values(1,2222222,2,'pablo','perez','soto','01/03/10',3);
+insert into empleado(id_empleado,numrut,dvrut,primer_nombre,snombre,appaterno,apmaterno,fecha_contrato,tipo_empleado)
+values(2,3333333,3,'pedro','jose','torres','troncoso','14/03/11',3);
+insert into empleado(id_empleado,numrut,dvrut,primer_nombre,snombre,appaterno,apmaterno,fecha_contrato,tipo_empleado)
+values(3,4444444,4,'francisco','alejandro','aguilar','tapia','01/06/11',3);
+
+
+create table tipo_empleado
+(tipo_empleado number(20) not null,
+desc_tipo_empleado VARCHAR2(25) not null);
+
+insert into tipo_empleado(tipo_empleado,desc_tipo_empleado) 
+values(1,'administrativo');
+insert into tipo_empleado(tipo_empleado,desc_tipo_empleado) 
+values(2,'cocinero');
+insert into tipo_empleado(tipo_empleado,desc_tipo_empleado) 
+values(3,'vendedor');
+insert into tipo_empleado(tipo_empleado,desc_tipo_empleado) 
+values(4,'repartidor');
+
+
+create table ventas
+(nro_boleta number(8) not null,
+id_empleado number(5) not null,
+fecha_boleta date not null,
+monto_total number(8) not null);
+
+insert into ventas(nro_boleta,id_empleado,fecha_boleta,monto_total)
+values(100,1,'01/03/2014',200000);
+insert into ventas(nro_boleta,id_empleado,fecha_boleta,monto_total)
+values(101,1,'02/03/2014',100000);
+insert into ventas(nro_boleta,id_empleado,fecha_boleta,monto_total)
+values(102,1,'02/03/2014',75000);
+insert into ventas(nro_boleta,id_empleado,fecha_boleta,monto_total)
+values(103,3,'02/03/2014',45200);
+insert into ventas(nro_boleta,id_empleado,fecha_boleta,monto_total)
+values(90,3,'02/02/2014',75000);
+
+create table comision_ventas
+(nro_boleta number(8) not null,
+monto_comision number(8) not null);
+
+insert into comision_ventas(nro_boleta,monto_comision)
+values(100,26000);
+insert into comision_ventas(nro_boleta,monto_comision)
+values(101,13000);
+insert into comision_ventas(nro_boleta,monto_comision)
+values(102,9750);
+insert into comision_ventas(nro_boleta,monto_comision)
+values(103,5876);
+insert into comision_ventas(nro_boleta,monto_comision)
+values(90,9750);
+
+
+
+
+
+drop table comision_ventas
+SELECT * from comision_ventas
