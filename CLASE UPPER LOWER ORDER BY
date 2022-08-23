@@ -1,0 +1,29 @@
+SELECT
+UPPER (department_name) AS Department_name ,
+LOWER (department_name) AS "Department_name_2",
+department_ID 
+FROM hr.departments 
+WHERE SUBSTR(department_name,1,1) NOT IN ('A','E','I','O','U')
+AND MOD(department_ID,4)=0  -- Que sea multiplo de 4
+ORDER BY department_name
+;
+
+
+SELECT
+UPPER (department_name) AS Department_name ,
+LOWER (department_name) AS "Department_name_2",
+department_ID,
+LENGTH(department_name)
+FROM hr.departments 
+WHERE NOT INSTR(department_name,' ',1,1)>0
+ORDER BY LENGTH(department_name) DESC
+;
+
+SELECT
+UPPER (department_name) AS Department_name ,
+LOWER (department_name) AS "Department_name_2",
+department_ID
+FROM hr.departments 
+WHERE INSTR(department_name,'e',1,1)>0
+ORDER BY LENGTH(department_name) asc
+;
