@@ -1,0 +1,6 @@
+create user Remilia identified by Annie195
+default tablespace users
+quota unlimited on users
+temporary tablespace temp;
+
+grant connect , resource to Remilia;
