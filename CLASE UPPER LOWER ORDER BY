@@ -27,3 +27,11 @@ FROM hr.departments
 WHERE INSTR(department_name,'e',1,1)>0
 ORDER BY LENGTH(department_name) asc
 ;
+//////////////////////////////////////////////////////////////////////////////////
+
+-----Para poner la primera letra como mayuscula , se debe usar el comando InitCap , el cual pondra la primera letra en mayuscula dejando el reto como minuscula---------
+Select InitCap ( NOMBRE ) AS VENDERDO ,
+       SUELDO_BASE AS "SUELDO BASE"
+       COMISION AS "% COMISION"
+       FECHA CONTRATO AS "FECHA_CONTRATO"
+FROM VENDERDOR;
