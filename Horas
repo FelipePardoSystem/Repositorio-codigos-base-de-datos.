@@ -1,0 +1,29 @@
+SELECT SYSDATE FROM DUAL; --Guarda y contiene la fecha y hora del sistema.
+
+
+SELECT SYSDATE ,TO_CHAR(SYSDATE,'DD-MM-YYYY')as "HOY", --Cambiar la fecha del sistema  
+                TO_CHAR(SYSDATE,'SS-MI-SS')  as "AHORA", -- cambiar la hora el sistema
+                CURRENT_DATE,
+                TO_CHAR(SYSDATE,'DD-MM-YYYY')as "HOY", -- cambiar la fecha ''current'' osea actual de la zona horaria
+                TO_CHAR(SYSDATE,'SS-MI-SS')  as "AHORA" - hora
+                FROM DUAL;
+                
+                
+                ///////////////////////
+                SELECT SYSDATE ,TO_CHAR(SYSDATE,'DD-MM-YYYY')as "HOY",
+                TO_CHAR(SYSDATE,'SS-MI-SS')  as "AHORA",
+                CURRENT_DATE,
+                TO_CHAR(SYSDATE,'DD-MM-YYYY')as "HOY",
+                TO_CHAR(SYSDATE,'SS-MI-SS')  as "AHORA",
+                TO_CHAR(SYSDATE,'Day "," DD "de" Month "," hh24:mi:ss') as "Ahora",
+                TO_CHAR(SYSDATE,'Day "," fmDD "de" fmMONTH "de" YYYY') as "Ahora 2"                
+                FROM DUAL;
+                
+                
+ALTER SESSION SET NLS_TERRITORY='CHILE'
+
+SELECT SYSDATE ,
+       TO_CHAR(SYSDATE,'H24:MI:SS')as "HORA",
+       TO_CHAR(SYSDATE - 1/24,'H24:MI:SS')as "UNA HORA ANTES",
+       TO_CHAR(SYSDATE + 1/24,'H24:MI:SS')as "UNA HORA DESPUES"
+       FROM DUAL;
