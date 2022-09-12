@@ -19,4 +19,14 @@ lpad (to_char(trunc( months_between (LAST_DAY(sysdate) , hire_date)/12) *
 EMAIL AS "Email",
 PHONE_NUMBER AS "Numero de telefono"
 
+   lpad( '$'||to_char(salary,'999g999d99'),20,' ') as "sueldo actual",
+   lpad( '$'||to_char( trunc( months_between (last_day(sysdate), hire_date)/12 ) * 
+         case when ( job_id in ('AD_PRES','AD_VP') or  job_id like '%MGR' or job_id like '%MAN' ) then 0.5 else 1 end / 100 * SALARY , '9g999d99') ,20,' ') as "monto bono",
+   lpad( '$'||to_char( trunc( months_between (last_day(sysdate), hire_date)/12 ) *
+         case when ( job_id in ('AD_PRES','AD_VP') or  substr(job_id,-3) in ('MGR','MAN') ) then 0.5 else 1 end / 100 * SALARY + SALARY, '999g999d99'),20,'  ') as "sueldo reajustado"
+from hr.employees 
+where trunc( months_between (last_day(sysdate), hire_date)/12 ) >= &Anios
+order by "monto bono" desc, hire_date asc, last_name asc ;
+
+
 FROM  EMPLOYEES;
