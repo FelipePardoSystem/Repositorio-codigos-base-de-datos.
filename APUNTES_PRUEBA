@@ -1,0 +1,22 @@
+SELECT 
+EMPLOYEE_ID AS "Numero de empleado",
+FIRST_NAME || ' ' || LAST_NAME AS "Nombre completo",
+JOB_ID AS "Cargo",
+to_char(HIRE_DATE ,'Day , dd "de" yyyy') AS " Fecha de contrato",
+SALARY AS "Sueldo actual",
+trunc( months_between (LAST_DAY(sysdate) , hire_date)/12)  as "Años de servicio",
+lpad (to_char(trunc( months_between (LAST_DAY(sysdate) , hire_date)/12) *
+    case when 
+                (job_id = 'AD_PRES' OR
+                job_id = 'AD_VP' OR
+                job_id  like '%MGR' OR
+                job_id like '%MAN')
+            then 0.5
+            else 1
+        end
+        , '09d99') || '%'
+    ,20, ' ') as "porcentaje bono",
+EMAIL AS "Email",
+PHONE_NUMBER AS "Numero de telefono"
+
+FROM  EMPLOYEES;
