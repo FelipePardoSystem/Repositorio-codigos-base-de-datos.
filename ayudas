@@ -1,0 +1,410 @@
+5.1] consultas de datos con SQL. DQL
+[5.1.1]capacidades
+DQL es la abreviatura del Data Query Language (lenguaje de consulta de datos) de SQL. El único comando que pertenece a este lenguaje es el versátil comando SELECT Este comando permite fundamentalmente:
+
+Obtener datos de ciertas columnas de una tabla (proyección)
+Obtener registros (filas) de una tabla de acuerdo con ciertos criterios (selección)
+Mezclar datos de tablas diferentes (asociación, join)
+Realizar cálculos sobre los datos
+Agrupar datos
+[5.1.2]sintaxis sencilla del comando SELECT
+SELECT * | {[DISTINCT] columna | expresión [[AS] alias], ...}
+FROM tabla;
+Donde:
+
+*. El asterisco significa que se seleccionan todas las columnas
+DISTINCT. Hace que no se muestren los valores duplicados.
+columna. Es el nombre de una columna de la tabla que se desea mostrar
+expresión. Una expresión válida SQL
+alias. Es un nombre que se le da a la cabecera de la columna en el resultado de esta instrucción. No es imprescindible usar la palabra AS.
+Ejemplos:
+
+/*Selección de todos los registros de la tabla clientes*/
+SELECT * FROM Clientes; 
+/* Selección de algunos campos*/
+SELECT nombre, apellido1, apellido2 FROM Clientes;
+uso del asterisco
+El símbolo * (asterisco) sirve para seleccionar todas las columnas de una tabla. Ejemplo:
+
+SELECT * FROM empleados;
+Sólo se puede utilizar tras la palabra SELECT y no puede estar acompañado de ninguna expresión. Por ejemplo, no es correcto:
+
+SELECT *, precio+iva
+FROM empleado; 
+--Incorrecto, el asterisco no puede estar acompañado de 
+--ninguna otra expresión
+alias
+Los alias sirven para dar otro nombre a una columna. Por ejemplo:
+
+SELECT id_trabajo AS identificador, nombre FROM trabajos;
+La columna id_trabajo ha sido renombrada por la palabra identificador. No es un renombrado permanente, sólo se utiliza en la ejecución de la instrucción SELECT. No estamos realmente cambiando de nombre a la columna, por ello lo que se dice es que estamos poniendo un alias a esa expresión.
+
+No es obligatorio utilizar la palabra AS, es igualmente válido dejar un espacio en blanco antes del alias:
+
+SELECT id_trabajo identificador, nombre FROM trabajos;
+Usar o no AS es cuestión de gustos. Sus defensores lo hacen porque la instrucción SELECT es más legible.
+
+En los alias, es muy normal utilizar espacios en blanco para indicar el nombre a fin de conseguir nombres más claros. En ese caso se debe utilizar comillas dobles para especificar el alias:
+
+SELECT id_trabajo “identificador de trabajo”, nombre 
+FROM trabajos;
+Con comillas dobles podemos utilizar cualquier carácter para dar nombre al alias.
+
+[5.2] cálculos
+[5.2.1]aritméticos
+Los operadores + (suma), - (resta), * (multiplicación) y / (división), se pueden utilizar para hacer cálculos en las consultas. Cuando se utilizan como expresión en una consulta SELECT, no modifican los datos originales sino que como resultado de la vista generada por SELECT, aparece un nueva columna. Ejemplo:
+
+SELECT nombre, precio,precio*1.16 FROM articulos;
+Esa consulta obtiene tres columnas. La tercera muestra el resultado de la operación. Al no indicar nombre alguno, se toma la propia expresión (precio*1,16) como cabecera de esa columna. Eso significa que no tiene un nombre válido, por lo que se debería siempre utilizar alias:
+
+SELECT nombre, precio, precio*1.16 AS precio_con_iva
+FROM articulos;
+La prioridad de esos operadores es la habitual en todos los lenguajes de programación
+
+Tienen más prioridad las operaciones de multiplicación y división que las de suma y la resta.
+En caso de igualdad de prioridad, se realiza primero la operación que esté más a la izquierda. Como es lógico, se puede evitar cumplir esa prioridad usando paréntesis; el interior de los paréntesis es lo que se ejecuta primero.
+Cuando una expresión aritmética se aplica sobre valores NULL, el resultado es el propio valor NULL.
+
+Se puede utilizar cualquiera de los operadores aritméticos: suma (+), resta (-), multiplicación (*), división (/). Como es habitual, la multiplicación y la división tienen preferencia sobre la suma y la resta en el orden de ejecución de la instrucción; dicho orden se puede alterar mediante el uso de los paréntesis.
+
+[5.2.2]concatenación de textos
+El operador de concatenar texto permite unir dos textos. Normalmente se usa para juntar resultados de diferentes expresiones en una miasma columna de una tabla. Todas las bases de datos incluyen algún operador para encadenar textos. En SQL Server y otros gestores es el signo + (suma), en Oracle son los signos ||. Ejemplo (Oracle):
+
+SELECT tipo, modelo, tipo || ‘-’ || modelo “Clave Pieza”
+FROM piezas; 
+El resultado sería:
+
+Tipo
+
+Modelo
+
+Clave Pieza
+
+AR
+
+6
+
+AR-6
+
+AR
+
+7
+
+AR-7
+
+AR
+
+8
+
+AR-8
+
+AR
+
+9
+
+AR-9
+
+AR
+
+12
+
+AR-12
+
+AR
+
+15
+
+AR-15
+
+AR
+
+20
+
+AR-20
+
+AR
+
+21
+
+AR-21
+
+BI
+
+10
+
+BI-10
+
+BI
+
+20
+
+BI-20
+
+BI
+
+22
+
+BI-22
+
+BI
+
+24
+
+BI-24
+
+En la mayoría de bases de datos, la función CONCAT (se describe más adelante) realiza la misma función.
+
+[5.3] condiciones
+Se pueden realizar consultas que restrinjan los datos de salida de las tablas. Para ello se utiliza la cláusula WHERE. Esta cláusula permite colocar una condición que han de cumplir todos los registros, los que no la cumplan no aparecen en el resultado.
+
+Ejemplo:
+
+SELECT Tipo, Modelo FROM Pieza WHERE Precio>3;
+[5.3.1]operadores de comparación
+Se pueden utilizar en la cláusula WHERE, son:
+
+Operador
+
+Significado
+
+>
+
+Mayor que
+
+<
+
+Menor que
+
+>=
+
+Mayor o igual que
+
+<=
+
+Menor o igual que
+
+=
+
+Igual
+
+<>
+
+Distinto
+
+!=
+
+Distinto
+
+Se pueden utilizar tanto para comparar números como para comparar textos y fechas. En el caso de los textos, las comparaciones se hacen en orden alfabético.
+
+En muchas bases de datos hay problemas con la Ñ y otros símbolos nacionales al ordenar o comparar con el signo de mayor o menor, ya que la el orden ASCII no respeta el orden de cada alfabeto nacional.
+
+No obstante, es un problema que prácticamente está solucionado, ya que la mayoría de los SGBD son compatibles con Unicode. En concreto Oracle no tiene este problema desde hace ya unas cuantas versiones del producto).
+
+[5.3.2]valores lógicos
+Son:
+
+Operador
+
+Significado
+
+AND
+
+Devuelve verdadero si las expresiones a su izquierda y derecha son ambas verdaderas
+
+OR
+
+Devuelve verdadero si cualquiera de las dos expresiones a izquierda y derecha del OR, son verdaderas
+
+NOT
+
+Invierte la lógica de la expresión que está a su derecha. Si era verdadera, mediante NOT pasa a ser falso.
+
+Ejemplos:
+
+/* Obtiene a las personas de entre 25 y 50 años*/
+SELECT nombre, apellido1,apellido2 FROM personas 
+WHERE edad>=25 AND edad<=50;
+/*Obtiene a la gente de más de 60 años o de menos de 20*/
+SELECT nombre, apellido1,apellido2 FROM personas 
+WHERE edad>60 OR edad<20;
+/*Obtiene a la gente de con primer apellido entre la 
+A y la O */
+SELECT nombre,apellido1,apellido2 FROM personas 
+WHERE apellido1>’A’ AND apellido2<’Z’;
+[5.3.3]BETWEEN
+El operador BETWEEN nos permite obtener datos que se encuentren en un rango. Uso:
+
+SELECT tipo,modelo,precio FROM piezas 
+WHERE precio BETWEEN 3 AND 8;
+Saca piezas cuyos precios estén entre 3 y 8 (ambos incluidos). En realidad es una forma más rápida de hacer esta consulta:
+
+SELECT tipo,modelo,precio FROM piezas 
+WHERE precio>=3 AND precio<=8;
+[5.3.4]IN
+Permite obtener registros cuyos valores estén en una lista de valores:
+
+SELECT tipo,modelo,precio FROM piezas 
+WHERE precio IN (3,5,8);
+Obtiene piezas cuyos precios sean 3, 5 u 8 (no valen ni el precio 4 ni el 6, por ejemplo).
+
+[5.3.5]LIKE
+Se usa sobre todo con textos, permite obtener registros cuyo valor en un campo cumpla una condición textual. LIKE utiliza una cadena que puede contener estos símbolos:
+
+Símbolo
+
+Significado
+
+%
+
+Una serie cualquiera de caracteres
+
+_
+
+Un carácter cualquiera
+
+Ejemplos:
+
+/* Selecciona nombres que empiecen por S */
+SELECT nombre FROM personas WHERE nombre LIKE ‘S%’;
+/*Selecciona las personas cuyo apellido sea Sanchez, Senchez, Sánchez,...*/
+SELECT apellido1 FROM Personas 
+WHERE apellido1 LIKE ‘S_nchez’;
+[5.3.6]IS NULL
+En SQL para valorar los nulos, es frecuente cometer este error:
+
+SELECT nombre,apellidos FROM personas
+WHERE telefono=NULL
+Esa expresión no es correcta. No debemos usar los operadores de comparación normales con valores nulos. La consulta anterior no muestra a las personas sin teléfono (que es lo que pretendemos).
+
+Lo correcto es usar el operador destina a comprobar si un determinado dato es nulo:
+
+SELECT nombre,apellidos FROM personas
+WHERE telefono IS NULL
+Esa instrucción selecciona a la gente que no tiene teléfono.
+
+Existe también la expresión contraria: IS NOT NULL que devuelve verdadero en el caso contrario, ante cualquier valor distinto de nulo.
+
+[5.3.7]precedencia de operadores
+A veces las expresiones que se producen en los SELECT son muy extensas y es difícil saber que parte de la expresión se evalúa primero. Por ello es necesario conocer la tabla de precedencia que indica qué operadores tienen prioridad entre sí. Los que están al nivel 1 tienen la máxima prioridad.
+
+La tabla completa es la siguiente:
+
+Orden de precedencia
+
+Operador
+
+1
+
+*(Multiplicar) /(dividir)
+
+2
+
++ (Suma) - (Resta)
+
+3
+
+|| (Concatenación)
+
+4
+
+Comparaciones (>, <, !=, ...)
+
+5
+
+IS NULL, IS NOT NULL, LIKE, IN, NOT IN
+
+6
+
+NOT, NOT BETWEEN
+
+7
+
+NOT
+
+8
+
+AND
+
+9
+
+OR
+
+Las reglas de prioridad se pueden alterar mediante paréntesis. Por ejemplo, supongamos que tenemos esta expresión:
+
+SELECT nombre, apellido1, apellido2
+FROM alumnos
+WHERE id_clase=1 OR id_clase=13 AND nota>=5;
+Parece que queremos obtener el nombre y apellidos de los alumnos aprobados (nota>=5) de las clases número 11 y 13. Pero como AND tiene prioridad sobre el OR, sacaremos los alumnos aprobados de la clase 13 y además se mostrarán todos los alumnos de la clase 11 (hayan aprobado o no).
+
+Lo correcto hubiera sido usar paréntesis:
+
+SELECT nombre, apellido1, apellido2
+FROM alumnos
+WHERE (id_clase=11 OR id_clase=13) AND nota>=5;
+[5.4] ordenación
+[5.4.1]introducción
+Las filas que resultan de una instrucción SELECT no guarda más que una relación respecto al orden en el que fueron introducidos, y ese orden normalmente no tiene ningún interés. Para ordenar en base a criterios más interesantes, se utiliza la cláusula ORDER BY. Esa es a cláusula que permite hacer efectiva una de las reglas relacionales más importantes: que el orden de introducción de las filas no importa
+
+En esa cláusula se coloca una lista de campos por los que queremos ordenar los resultados. Se ordena primero por el primer campo de la lista, si hay coincidencias por el segundo, si ahí también las hay por el tercero, y así sucesivamente.
+
+Se puede colocar las palabras ASC O DESC (por defecto se toma ASC). Esas palabras permiten ordenar en ascendente (de la A a la Z, de los números pequeños a los grandes) o en descendente (de la Z a la a, de los números grandes a los pequeños) respectivamente. Por defecto, si no se indica nada, la ordenación es ascendente.
+
+[5.4.2]sintaxis completa de SELECT con la cláusula ORDER BY
+Sintaxis de SELECT (para una sola tabla), incluida la cláusula ORDER BY:
+
+SELECT {* | [DISTINCT] {columna | expresión} [[AS] alias], ... }
+FROM tabla
+[WHERE condición]
+[ORDER BY  expresión1 [,expresión2,…][{ASC|DESC}]];
+Las expresiones de la cláusula ORDER BY pueden ser cualquiera que haga referencia a una columna o a cálculos sobre la columna. Ejemplo:
+
+SELECT nombre,apellido1,apellido2
+FROM alumnos
+ORDER BY apellido1, apellido2, nombre;
+Obtendrá la lista de alumnos ordenados por su primer apellido, luego por el segundo y luego por el nombre.
+
+[5.4.3]ascendente y descendente
+Normalmente ordena en ascendente, pero si usamos DESC ordenará en descendente:
+
+SELECT nombre, apellido1, apellido2, 
+       f_n fecha_nacimiento
+FROM alumnos
+ORDER BY f_n DESC;
+Mostrará la lista de alumnos ordenada de forma que aparezcan primero los más jóvenes.
+
+Además podemos usar el alias en lugar del nombre de la columna:
+
+SELECT  nombre, apellido1, apellido2, 
+        f_n fecha_nacimiento
+FROM alumnos
+ORDER BY fecha_nacimiento DESC;
+Incluso podemos utilizar el número de columna:
+
+SELECT nombre, apellido1, apellido2, 
+       f_n fecha_nacimiento
+FROM alumnos 
+ORDER BY 4 DESC;
+También es posible mezclar ordenaciones en ascendente y descendente:
+
+SELECT nombre, apellido1, apellido2, 
+       f_n fecha_nacimiento, id_clase
+FROM alumnos
+ORDER BY id_clase, f_n DESC;
+Este último SELECT muestra los datos de los alumnos de forma que salgan ordenados en ascendente por el número de clase. Dentro de cada clase saldrán primero por fecha de nacimiento, pero ordenando en descendente la fecha.
+
+[5.4.4]orden por número de columnas
+Oracle permite ordenar en base a números que representan las columnas en el orden en el que aparecen en esta instrucción. Ejemplo:
+
+SELECT nombre, apellido1, apellido2, 
+       fecha_nacimiento, id_clase
+FROM alumnos
+ORDER BY 2,3,1;
+En este ejemplo se ordena por primer apellido, luego por segundo y luego por el nombre.
+
+Este formato se puede combinar con los vistos antes. Ejemplo:
+
+SELECT nombre, apellido1, apellido2, 
+       fecha_nacimiento, id_clase
+FROM alumnos
+ORDER BY 2,3,nombre;
