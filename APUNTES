@@ -1,0 +1,21 @@
+APUNTES PARA LA PRUEBA
+ /////////////////////// COMO CALCULAR LOS AÑOS DE UNA PERSONA A PARTIR DE SU FECHA DE NACIMIENTO Y LA FECHA  POR SISTEMA.
+SELECT SYSDATE,
+       TO_DATE('24042003','DDMMYYYY') as "Stephen's",
+       TRUNC ( ( SYSDATE - TO:DATE('20101999','DDMMYYYY')) / 365 ) as "EDAD DE CARLOS",
+       TRUNC (MONTHS_BETWEEN( SYSDATE,TO_DATE('20101999','DDMMYYYY'))/12) as meses
+ FROM DUAL;
+ 
+ //////////////////////////como calcular el bono que recibira un persona por años trabajados
+ SELECT
+     employee_id as "id empleado",
+     first_name ||' '||last_name as "nombre completo",
+     hire_date as "fecha de contrato",
+     TRUNC(MONTHS_BETWWEN ( SYSDATE,hire_dae)/12) as "Años cumplidos",
+     '$'||TO_CHAR(SALARY,'999g99990') as "sueldo",
+     '$'||TO_CHAR(SALARY*(TRUNCMONTHS_BETWEEN(SYSDATE,hire_date)/12)/100) , '999g999') as "bono"
+     '$'||TO_CHAR(SALARY* (1+(TRUNC(MONTHS_BETWEEN(SYSDATE,hire_date)/12)100)), '999g999')
+ FROM
+     employees
+ WHERE TRUNC(MONTHS_BETWWEN(SYSDATE,hire_date)/12)) >=20
+ ORDER BY last_name DESC;
