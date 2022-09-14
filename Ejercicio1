@@ -1,0 +1,15 @@
+SELECT
+    employee_id EMPLEADO,
+    first_name NOMBRE,
+    last_name APELLIDO,
+    email "CORREO ANTIGUO",
+    (lower(SUBSTR (first_name,0,2)||SUBSTR(last_name,0,2))||'@'||'canadian_music.com') AS "OPCION 1",
+    lower(first_name||'_'||last_name||'@'||'canadian_music.com') AS "OPCION 2",
+    to_char(hire_date,'YYYY')||(lower(SUBSTR (first_name,0,1)||SUBSTR(last_name,0,1)))||to_char(substr(phone_number,-3,3)) "CLAVE"
+FROM employees;
+
+SELECT
+    email
+FROM
+    employees
+where instr(email,'A')>=1;
