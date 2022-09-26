@@ -1,0 +1,76 @@
+--CASO 1
+SELECT
+    employeeid as EMPLEADO,
+    firstname as NOMBRE,
+    lastname as APELLIDO,
+    email as "CORREO ANTIGUO",
+    (lower(SUBSTR (firstname,0,2)||SUBSTR(lastname,0,2))||'@'||'canadian_music.com') AS "OPCION 1",
+    lower(firstname||'_'||lastname||'@'||'canadian_music.com') AS "OPCION 2",
+    to_char(birthdate,'YYYY')||(lower(SUBSTR (firstname,0,1)||SUBSTR(lastname,0,1)))||to_char(substr(postalcode,-3,3)) "CLAVE"
+FROM employees;
+
+SELECT
+    email
+FROM
+    employees
+where instr(email,'chino')>=1;
+--CASO 2
+SELECT
+    
+    billingcountry,
+    total
+    (1SYSDATE)(1-((SYSDATE,hire)/12)100))
+    FROM invoices;
+    SELECT SYSDATE,
+                TO_CHAR(SYSDATE,'DD"-"Mon"-"YYYY"" hh24:mi:ss') as "AUTOR"
+                FROM invoices;
+
+SELECT  SYSDATE as "Fecha Actual",
+       -- SYSDATE - EXTRACT( DAY FROM SYSDATE)+1
+       -- as "Inicio_mes"
+        TRUNC(SYSDATE,'MM') as "inicio_mes" ,
+        ADD_MONTHS(TRUNC(SYSDATE,'MM'),-1) as "Inicio_Mes_Anteror"
+        
+        
+        FROM DUAL;
+        
+SELECT  DISTINCT
+       
+       TO_CHAR (ADD_MONTHS(TRUNC(SYSDATE,'MM'),-1),'MON')||'-'||
+       to_char(sysdate,'MON,YYYY') AS "periodo",
+       billingcountry as "PAIS",
+       'Roy Barrera'||To_char(SYSDATE, 'DD-Mon-YYYY HH24:MI:SS') as "AUTOR"
+       FROM INVOICES
+       WHERE  INVOICEDATE >= ADD_MONTHS(TRUNC(SYSDATE,'MM'),-1)
+       ORDER BY 2;
+
+                
+                
+
+--IDENTIFICANDO LOS ALBUMS
+SELECT
+    albumid,
+    title,
+    artistid 
+FROM
+    albums
+WHERE instr(artistid,'52')=1;
+
+
+--CASO 3
+
+SELECT
+    trackid as "NUMERO DE PISTA",
+    name as CANCION,
+    TO_CHAR(milliseconds,'999g999' as MILISEGUNGOS,
+    TRUNC((milliseconds/1000)/60) as "MINUTOS" ||':'||
+    lpad(mod(TRUNC(milliseconds/1000)/60),2,'0') as "SEGUNDOS",
+    bytes as BYTES, 
+    '  ' ||TRUNC(bytes/1024)|| ' Kb' as KILOS,
+    '  '||TRUNC ((bytes/1024)/1024)||' Mb' as MEGAS
+    --TO_CHAR(TRUNC(bytes/1024),'999g999')|| ' Kb'  as KILOS,
+    --TO_CHAR(TRUNC ((bytes/1024)/1024),'999g999') ||' Mb'   as MEGAS
+FROM
+    tracks
+    WHERE instr(albumid,'37')=1 or instr(albumid,'126')=1; 
+    
