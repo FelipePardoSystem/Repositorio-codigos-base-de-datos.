@@ -1,0 +1,76 @@
+--Que departamentos hay--
+Select * FROM DEPARTMENTS;
+
+--Que departamentos comienzan con una vocal--
+
+SELECT department_id,
+       department_name,
+       substr(department_name,1,1)
+FROM  DEPARTMENTS 
+WHERE substr(department_name,1,1) IN ('A','E','I','O','U')
+;
+--substr(department_name,1,1) = 'A'
+--OR    substr(department_name,1,1) = 'E'
+--OR    substr(department_name,1,1) = 'I'
+--OR    substr(department_name,1,1) = 'O'
+--OR    substr(department_name,1,1) = 'U'
+--ESTO NOS MUESTRA  QUE DEPARTAMENTOS EMPIEZACN CON LA LETRA A , E ,I , O , U
+
+--CUANTOS EMPLEADOS TRABAJAN EN CADA DEPARTAMENTO--
+
+SELECT count(*)
+FROM EMPLOYEES; --107 EMPLEADOS
+
+SELECT count(*)
+FROM DEPARTMENTS; --27 DEPARTAMENTOS
+
+select employee_id , department_id
+from employees;
+
+SELECT count(department_id)
+FROM EMPLOYEES;           --Cuenta cuantos empleados poseen un campo relleno con el nombre Department_id , en este caso son 106 dado a que hay 1 que es NULL
+
+
+SELECT count(employee_id) as "Cantidad_empleados",
+       count(department_id) as "departamentos asignados",
+       count(distinct department_id) as " Distintos"
+FROM employees;      
+
+SELECT department_id, department_name
+from departments
+where department_id  in (100,30,90,20,70,110,50,80,40,60,10); -- NOS MUESTRA EL NOMBRE DE LOS DEPARTAMENTOS QUE CONTENGAN ESA ID (DEPARTAMENTOS CON EMPLEADOS)
+
+
+
+SELECT department_id, department_name
+from departments
+where department_id not in (100,30,90,20,70,110,50,80,40,60,10); -- NOS MUESTRA EL NOMBRE DE LOS DEPARTAMENTOS QUE NO CONTENGAN UNA DE ESTAS ID (DEPARTAMENTOS SIN EMPLEADOS)
+
+SELECT department_id, department_name
+from departments
+where department_id  in (select distinct department_id
+                         from employees);              -----SUB QUERY
+
+
+SELECT distinct D.department_id, D.department_name --Selecciona 
+from departments D join employees E
+on D.department_id  = E.department_id               --- IDENTIFICA QUE DEPARTAMENTOS POSEEN EMPLEADOS , UTILIZANDO JOIN
+ORDER BY 1;                    
+
+SELECT department_id, count(employee_id)
+FROM EMPLOYEES
+GROUP BY department_id ;
+
+
+--Se nececita saber el nombre del departamento , su id y cuantos empleados trabajan en el.}
+
+
+SELECT D.department_name,
+       D.department_id,
+       count(E.employee_id)
+from employees E LEFT join departments D
+on E.department_id = D.department_id
+GROUP BY D.department_name,
+         D.department_id 
+         
+ ORDER BY 1 nulls first;
