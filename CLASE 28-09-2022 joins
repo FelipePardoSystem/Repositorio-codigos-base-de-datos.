@@ -74,3 +74,14 @@ GROUP BY D.department_name,
          D.department_id 
          
  ORDER BY 1 nulls first;
+ 
+ 
+ SELECT NVL(D.department_name, 'no asignado') as department_id,
+        NVL(TO_CHAR(D.department_id),'XXX' )AS department_id,
+       count(E.employee_id)
+from employees E FULL join departments D
+on E.department_id = D.department_id
+GROUP BY D.department_name,
+         D.department_id 
+         
+ ORDER BY 1 nulls last;
