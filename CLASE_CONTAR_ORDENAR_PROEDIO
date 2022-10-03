@@ -1,0 +1,50 @@
+SELECT
+    employee_id,
+    first_name,
+    last_name,
+    email,
+    phone_number,
+    hire_date,
+    job_id,
+    salary,
+    commission_pct,
+    manager_id,
+    department_id
+FROM
+    employees;
+    
+    
+SELECT 
+    count(1)
+FROM
+    employees;  
+    
+SELECT
+    count(department_id)
+    
+FROM
+    departments;
+    
+SELECT
+    count(department_id),
+    count(DISTINCT DEPARTMENT_ID)
+    
+    
+FROM
+    employees ;
+    
+SELECT department_id, DEPARTMENT_NAME ,JOB_ID,JOB_TITLE,
+    count(*)    AS CANTIDAD,
+    SUM(SALARY)AS TOTAL,
+    ROUND(AVG(SALARY),2) AS PROMEDIO,
+    MIN(SALARY),
+    MAX(SALARY)
+FROM
+    EMPLOYEES JOIN DEPARTMENTS USING (DEPARTMENT_ID)
+    JOIN JOBS USING(JOB_ID)
+    WHERE DEPARTMENT_ID IS NOT NULL
+    GROUP BY DEPARTMENT_ID,JOB_ID, DEPARTMENT_NAME, JOB_TITLE
+    ORDER BY DEPARTMENT_ID,JOB_ID;
+  
+SELECT * FROM EMPLOYEES WHERE DEPARTMENT_ID = 90;  
+  
