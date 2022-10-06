@@ -1,0 +1,54 @@
+ SELECT
+    A.department_id AS "ID_Departamento",
+    A.department_name AS Nombre_departamento,
+    NVL(TO_CHAR(A.manager_id),' ') AS "ID Jefe", --NLV ( TODOS VALORES QUE SE DETECTEN COMO NULL , LOS DEJARÁ COMO NOSOTROS ESPECIFIQUEMOS
+    --NVL(E.first_name ||' '|| E.last_name,'No tiene') as "Nombre Jefe"
+    case when E.first_name is null then 'No tiene'
+        else E.first_name ||' '|| E.last_name end as Nombre_Jefe,
+        NVL(X.Cant_Empleados,0) as  Cantidad_de_empleados,
+        '$'||TO_CHAR(NVL(X.Promedio,0),'999g999') as  "Promedio sueldos",
+        '$'||TO_CHAR(NVL(X.Sueldo_minimo,0),'999g999') as  "Sueldo mas bajo",
+        '$'||TO_CHAR(NVL(X.Sueldo_maximo,0),'999g999') as  "Sueldo mas alto",
+            c.first_name ||' '|| c.last_name  as "wn con plata"
+FROM
+    departments A left join employees E 
+    on A.manager_id = E.employee_id
+    left join (select department_id , count(employee_id) as Cant_Empleados,
+    ROUND(AVG(salary),2) as Promedio,
+    MIN(salary) as Sueldo_minimo,
+    MAX(salary) as Sueldo_maximo
+    from employees
+    group by department_id) x -- EN ESTA SUB QUERY ACABO DE DEFINIR LA ABREBIATURA X PARA PROCEDER CON UN JOIN
+    on a.department_id=x.department_id
+    left join employees c on (A.department_id = c.department_id and x.Sueldo_maximo = c.salary);
+    
+ 
+ SELECT  
+ count(employee_id) as Cant_Empleados
+ from employees
+ group by department_id
+ ;
+---------------------------------------------QUERY SUMA------------------------------------------------------
+ select department_id , 
+ count(employee_id) as Cant_Empleados,
+ SUM(salary) as Suma_sueldo,
+ ROUND(AVG(salary),2) as Promedio,
+MIN(salary) as Sueldo_minimo,
+MAX(salary) as Sueldo_maximo
+    from employees
+    group by department_id ;
+----------------------------------------DEJEMOS LA CAGA----------------------------------------------------------
+
+ SELECT
+    A.department_id AS "ID_Departamento",
+    A.department_name AS Nombre_departamento,
+    NVL(TO_CHAR(A.manager_id),' ') AS "ID Jefe", --NLV ( TODOS VALORES QUE SE DETECTEN COMO NULL , LOS DEJARÁ COMO NOSOTROS ESPECIFIQUEMOS
+    --NVL(E.first_name ||' '|| E.last_name,'No tiene') as "Nombre Jefe"
+    case when E.first_name is null then 'No tiene'
+        else E.first_name ||' '|| E.last_name end
+        as "Nombre Jefe",
+        () as "Cantidad de empleados"
+        
+FROM
+    departments A left join employees E 
+    on A.manager_id = E.employee_id ;
