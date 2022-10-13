@@ -1,0 +1,89 @@
+ELECT * FROM HR.EMPLOYEES ;
+SELECT * FROM HR.DEPARTMENTS ;
+
+
+--------------------------------------
+CREATE PUBLIC SYNONYM EMPLEADOS FOR HR.EMPLOYEES;
+CREATE PUBLIC SYNONYM DEPARTAMENTOS FOR HR.DEPARTMENTS;
+
+
+--------------------------------------
+CREATE TABLE CUALQUIERA AS
+
+SELECT e.employee_id,
+        e.first_name||' '|| e.last_name as employee_name ,
+        e.hire_date,
+        e.job_id,
+        e.salary,
+        e.commission_pct,
+       --NVL( e.department_id ||' ' || d.department_name,) as Departamento_numero
+       NVL(TO_CHAR(e.department_id),' ') AS department_id,
+       NVL(d.department_name,'No asignado') as department_name
+FROM EMPLEADOS E
+    LEFT JOIN DEPARTAMENTOS D ON E.department_id = d.department_id
+WHERE e.commission_pct IS NOT NULL;
+
+INSERT INTO CUALQUIERA 
+SELECT e.employee_id,
+        e.first_name||' '|| e.last_name as employee_name ,
+        e.hire_date,
+        e.job_id,
+        e.salary,
+        e.commission_pct,
+       --NVL( e.department_id ||' ' || d.department_name,) as Departamento_numero
+       NVL(TO_CHAR(e.department_id),' ') AS department_id,
+       NVL(d.department_name,'No asignado') as department_name
+FROM EMPLEADOS E
+    LEFT JOIN DEPARTAMENTOS D ON E.department_id = d.department_id
+WHERE JOB_ID LIKE '%PROG%';
+
+COMMIT;
+
+SELECT * FROM EMPLEADOS
+WHERE job_id LIKE '%PROG%' ;
+
+
+
+UPDATE CUALQUIERA 
+SET COMMISSION_PCT = 0.19
+WHERE job_id LIKE '%PROG%' ;
+
+ROLLBACK;
+
+DELETE CUALQUIERA
+WHERE JOB_ID = 'SA_MAN';
+SELECT * FROM CUALQUIERA;
+
+
+------------PREGUNTA 2 SIMULAR QUE LAS VENTAS TOTALES DEL MES FUERON EL DOBLE DEL VALOR QUE SE OBTIENE AL PROMEDIAR LOS SUELDOS DE LOS EMPLEADOS , DESPUES DE CALCULAR EL BALOR , CALCULAR CUANTA COMISION SE LLEVO CADA UNO Y CALCULAR EL SUELDO + COMISION DE ESTE MES----------------------
+
+
+SELECT AVG(SALARY)*2 FROM CUALQUIERA;
+
+SELECT EMPLOYEE_ID ,
+       SALARY ,
+       COMMISSION_PCT,
+       LPAD(COMMISSION_PCT*100||'%',14,' ') AS PORCENTAJE,
+       15960 total_ventas ,
+       COMMISSION_PCT *15960 AS MONTO_COMISION ,
+       (COMMISSION_PCT *15960) + SALARY AS PAGO_MES
+       FROM CUALQUIERA;
+       
+SELECT EMPLOYEE_ID ,
+       SALARY ,
+       COMMISSION_PCT,
+       LPAD(COMMISSION_PCT*100||'%',14,' ') AS PORCENTAJE,
+       &&VENTAS total_ventas ,
+       COMMISSION_PCT * &&VENTAS AS MONTO_COMISION ,
+       (COMMISSION_PCT * &&VENTAS) + SALARY AS PAGO_MES
+       FROM CUALQUIERA; 
+       
+---------------ENLAZANDO AMBAS CONSULTAS----------------
+SELECT EMPLOYEE_ID ,
+       SALARY ,
+       COMMISSION_PCT,
+       LPAD(COMMISSION_PCT*100||'%',14,' ') AS PORCENTAJE,
+       &&VENTAS total_ventas ,
+       COMMISSION_PCT * &&VENTAS AS MONTO_COMISION ,
+       (COMMISSION_PCT * &&VENTAS) + SALARY AS PAGO_MES
+       FROM CUALQUIERA CROSS JOIN (SELECT AVG(SALARY)*2 FROM CUALQUIERA); 
