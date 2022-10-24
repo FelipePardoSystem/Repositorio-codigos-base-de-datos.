@@ -1,0 +1,154 @@
+SELECT
+    job_id as Trabajos,
+    max (salary) as "Salario maximo",
+    min (salary) as "Salario minimo",
+    sum (salary) as "Salarios sumados",
+    round(AVG(salary)) as "Salario promedio",
+    count(employee_id)as Empleados
+    
+    from employees 
+    group by job_id
+    order by 1
+    ;
+
+
+    SELECT
+    job_id as Trabajos,
+    count(distinct(employee_id))as "TOTAL EMPLEADOS"
+    from employees 
+    group by job_id
+    order by 1
+    ;
+
+
+        
+SELECT
+    NVL(TO_CHAR(manager_id),'NO POSEE JEFE') as JEFE,
+    count(DISTINCT(employee_id)) as "TOTAL EMPLEADOS"
+    from Employees
+group by manager_id
+ORDER BY 2 DESC, manager_id NULLS LAST;
+
+SELECT
+     NVL(TO_CHAR(department_id),'Sin departamento') AS DEPARTAMENTO,
+     COUNT(DISTINCT(employee_id)) as "TOTAL EMPLEADOS",
+     (TO_CHAR(sum(salary),'L999g999')) as "SALARIO TOTAL POR DEPTO"
+     --count(employee_id)* salary AS "SALARIO TOTAL POR DEPTO"
+FROM
+    employees   
+    GROUP BY department_id
+    
+    ORDER BY department_id;
+    
+    
+    
+    SELECT 
+     TO_CHAR(max (salary)- min (salary) ,'L999,|999') as "diferencia"
+    from employees;
+    
+    SELECT
+    NVL(TO_CHAR(department_id),'Sin departamento') AS DEPARTAMENTO,
+    count(distinct(employee_id)) as "TOTAL EMPLEADOS"
+    from Employees
+    group by department_id 
+    having COUNT(employee_id) > 5;
+    
+    
+    SELECT
+        COUNT(distinct(manager_id)) as "Total Jefes"
+        from employees
+        ;
+        
+
+SELECT 
+    department_id AS "DEPARTAMENTO",
+    job_id ,
+    min(salary) as "Salario Minimo"
+    from employees
+    where DEPARTMENT_ID is not null
+    group by department_id,job_id
+    HAVING min(salary)  >6000
+    ORDER BY 1,2
+    ;
+    
+    SELECT 
+    department_id as "DEPARTAMENTO",
+    count(distinct(employee_id)) as "TOTAL EMPLEADOS",
+     (TO_CHAR(sum(salary),'L999g999')) as "TOTAL SALARIO POR DEPTO"
+    from employees
+    group by department_id
+    HAVING (sum(salary)) between 15000 and 30000
+    order by 3,1 ASC ;
+    
+    Select
+    manager_id as "Jefe",
+    count(distinct(employee_id)) as "TOTAL EMPLEADOS",
+    max(salary) as "Salario Maximo",
+     round(max(salary)*count(distinct(employee_id))/100) as "Comision"
+    from employees
+    WHERE manager_id is not null
+    group by manager_id
+    
+    order by 1
+    ;
+    
+    
+    Select 
+        ' El empleado '||E.first_name||' '||E.last_name ||' trabaja en el departamento '|| D.department_name as "Departamento_empleado"
+        from Employees e join departments d  on e.department_id= d.department_id; 
+    
+    SELECT
+        e.employee_id as "Empleado",
+        e.salary as Salario,
+        e.job_id as "ID TRABAJO",
+        j.job_title as "DESCRIPCION TRABAJO" 
+FROM
+    employees e join Jobs j on e.job_id = j.job_id
+    WHERE e.salary < 2700
+    order by 1;
+    
+    SELECT
+    d.department_name,
+    count(distinct(e.employee_id)) as "TOTAL EMPLEADOS"
+    FROM
+    departments d join employees e on d.department_id = e.department_id
+    group by department_name
+    order by 1;
+    
+    
+    Select 
+    d.department_name,
+    max(e.salary)
+    from departments d join employees e on d.department_id = e.department_id
+    WHERE e.salary <= 20000 and e.salary > = 6000
+    group by department_name
+    order by 2 desc;
+    
+    Select 
+    d.department_name,
+    max(e.salary)
+    from departments d join employees e on d.department_id = e.department_id
+    group by department_name
+    having max(e.salary) between 6000 and 20000
+    order by 2 desc;
+        
+    select
+    e.first_name||' '||e.last_name as "NOMBRE EMPLEADO",
+    j.job_id as "TRABAJO",
+    d.department_name
+    from employees e join jobs j on e.job_id = j.job_id 
+                     join departments d on e.department_id = d.department_id
+                     join locations   l on d.location_id = l.location_id
+                     
+                     where l.location_id = 1800 or l.city = 'Toronto'
+                     order by 1;
+   select 
+   d.department_id as "ID.DEPARTAMENTO",
+   d.department_name as "DEPARTAMENTO",
+   count(distinct(e.employee_id)) as "TOTAL DE EMPLEADOS"
+   from departments d left join employees e on d.department_id = e.department_id
+   group by d.department_id , d.department_name
+   having count(distinct(e.employee_id)) = 0
+   order by 1;
+    
+
