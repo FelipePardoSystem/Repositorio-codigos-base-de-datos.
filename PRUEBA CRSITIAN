@@ -1,0 +1,130 @@
+   
+        SELECT  VEND.VENDEDOR_NOMBRE,
+                COUNT(VENTA_ID),
+                vend.sueldo_bruto,
+                vend.vendedor_fecha_contrato,
+                vend.FK_SUCURSAL_ID,
+                VEND.FK_COD_AFP,
+                VEND.FK_COD_SALUD,
+                VEND.VENDEDOR_FECHA_NACIMIENTO
+        INTO    V_NOMBRE,
+                V_CANTIDAD_VENTAS,
+                V_SUELDO_BRUTO,
+                v_fecha_contrato,
+                v_sucursal_id,
+                v_COD_AFP,
+                V_COD_SALUD,
+                V_FECHA_NAC
+        FROM    VENDEDOR VEND
+        LEFT JOIN    VENTA VENT ON VENT.FK_VENDEDOR_ID = VEND.VENDEDOR_ID
+        WHERE   VENDEDOR_ID = V_MIN
+        GROUP BY VEND.VENDEDOR_NOMBRE,
+                vend.sueldo_bruto,
+                vend.vendedor_fecha_contrato,
+                vend.FK_SUCURSAL_ID,
+                VEND.FK_COD_AFP,
+                VEND.FK_COD_SALUD,
+                VEND.VENDEDOR_FECHA_NACIMIENTO
+                
+                ;
+        
+        v_bono_ventas := V_CANTIDAD_VENTAS * :B_VENTAS;
+                
+         
+      
+        /*CALCULO BONO MOVILIZACION*/        
+        SELECT VALOR_PORCENTAJE
+        INTO V_BONO_MOV_PORC
+        FROM RANGO_SUELDO
+        WHERE V_SUELDO_BRUTO BETWEEN VALOR_INFERIOR AND VALOR_SUPERIOR;
+        
+        V_BONO_MOV := V_SUELDO_BRUTO * (V_BONO_MOV_PORC/100);
+        
+        
+        IF V_CANTIDAD_VENTAS BETWEEN 1 AND 4 THEN
+            V_BONO_MOV := V_BONO_MOV + :B_MOVILIZACION1;
+        ELSIF V_CANTIDAD_VENTAS >  4 THEN
+            V_BONO_MOV := V_BONO_MOV + :B_MOVILIZACION2;
+        ELSE 
+            V_BONO_MOV := V_BONO_MOV - :B_MOVILIZACION1 ;
+            
+        END IF;
+        /* bono años de contrato*/
+        
+        v_años_cont := TRUNC((SYSDATE - v_fecha_contrato)/365);
+        
+        SELECT VALOR_PORCENTAJE 
+        INTO V_PORC_ANIOS
+        FROM ANIOS_CONTRATO
+        WHERE  v_años_cont BETWEEN VALOR_INFERIOR AND VALOR_SUPERIOR;
+        
+        
+        V_BONO_ANIOS := V_SUELDO_BRUTO * (V_PORC_ANIOS/100);
+        
+        /*calculo bono colacion*/
+        v_bono_colacion := round((v_sueldo_bruto + V_BONO_MOV)* 0.08) ;
+        
+        /*DESCUENTO AREA */
+        
+        
+        SELECT DESCRIPCION
+        INTO  V_ZONA
+        FROM SUCURSAL S
+            JOIN ZONA_SUCURSAL Z ON Z.CODIGO = s.zona_id
+        WHERE sucursal_id = v_sucursal_id  ;
+        
+        V_EDAD:= TRUNC((SYSDATE-V_FECHA_NAC)/365);
+        
+        IF V_ZONA = 'ZONA 1' THEN
+            V_DESCUENTO_ZONA:= V_SUELDO_BRUTO * V_EDAD/100;
+        ELSE
+             V_DESCUENTO_ZONA:=0 ;
+        END IF;   
+        
+        INSERT INTO HABERES_MES VALUES (
+            V_MIN,
+            V_NOMBRE,
+            V_CANTIDAD_VENTAS,
+            v_bono_ventas,
+            V_SUELDO_BRUTO,
+            V_BONO_MOV,
+            v_bono_colacion,
+            V_BONO_ANIOS,
+            TO_CHAR(SYSDATE, 'MM/YYYY')
+        );
+            
+        INSERT INTO DESCUENTO_MES VALUES(
+            V_MIN,
+            V_DESCUENTO_ZONA,
+            0,
+            0,
+            TO_CHAR(SYSDATE, 'MM/YYYY')
+            );
+        
+        DBMS_OUTPUT.PUT_LINE(V_MIN);
+        DBMS_OUTPUT.PUT_LINE(V_NOMBRE);
+        DBMS_OUTPUT.PUT_LINE(V_CANTIDAD_VENTAS);
+        DBMS_OUTPUT.PUT_LINE(V_SUELDO_BRUTO);
+        DBMS_OUTPUT.PUT_LINE(V_BONO_MOV_PORC);
+        DBMS_OUTPUT.PUT_LINE(V_BONO_MOV);
+        DBMS_OUTPUT.PUT_LINE(V_BONO_ANIOS);
+        DBMS_OUTPUT.PUT_LINE(v_bono_colacion);
+        DBMS_OUTPUT.PUT_LINE(v_bono_ventas);
+        DBMS_OUTPUT.PUT_LINE(V_EDAD);
+        
+
+    
+        V_MIN := V_MIN +1;
+    END LOOP;  
+END;
+
+SELECT* FROM VENDEDOR;
+SELECT * FROM VENTA;
+select * from haberes_mes;
+SELECT * FROM descuento_mes;
+
+SELECT SUELDO_BRUTO, 
+    TRUNC((SYSDATE-VENDEDOR_FECHA_NACIMIENTO)/365) AÑO_NAC,
+    SUELDO_BRUTO * TRUNC((SYSDATE-VENDEDOR_FECHA_NACIMIENTO)/365)/100
+    
+FROM VENDEDOR;
